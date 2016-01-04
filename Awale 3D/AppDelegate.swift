@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  Awale 3D
+//  Ebola3D
 //
-//  Created by Grisha Ghukasyan on 04/01/2016.
+//  Created by Grisha Ghukasyan on 02/01/2016.
 //  Copyright © 2016 Grisha Ghukasyan. All rights reserved.
 //
 
