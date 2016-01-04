@@ -130,7 +130,8 @@ class GameViewController: UIViewController {
         scene.rootNode.addChildNode(map.map)
         
         var textNode = SCNNode(geometry: map.player2)
-        textNode.position = SCNVector3Make(20, -5, 0)
+        textNode.position = SCNVector3Make(40, -1, 0)
+        textNode.rotation = SCNVector4(0, 0, 1, CGFloat(M_PI))
         scene.rootNode.addChildNode(textNode)
         
         textNode = SCNNode(geometry: map.player1)

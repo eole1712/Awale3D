@@ -51,6 +51,7 @@ class Map {
             
             _map.append((4, unit))
         }
+        changeTurn(false)
     }
     
     func checkEnd() -> Bool {
@@ -64,6 +65,21 @@ class Map {
             total += _map[i].0
         }
         return ((total > 6 && nb > 0) ? false : true)
+    }
+    
+    func changeTurn(needChange: Bool) {
+        if (needChange) {
+            turn = (turn == 0 ? 1 : 0)
+        }
+        for i in 0..<12 {
+            if ((turn == 0 && i < 6) || (turn ==  1 && i >= 6))
+            {
+                _map[i].1.runAction(SCNAction.rotateByAngle(0.4, aroundAxis: SCNVector3((turn == 0 ? 1 : -1), 0, 0), duration: 0.5))
+            }
+            else if (needChange) {
+                _map[i].1.runAction(SCNAction.rotateByAngle(0.4, aroundAxis: SCNVector3((turn == 0 ? 1 : -1), 0, 0), duration: 0.5))
+            }
+        }
     }
     
     func doAction(c: Int)
@@ -96,8 +112,7 @@ class Map {
         
         player1.string = "Player 1 : " + String(players[0])
         player2.string = "Player 2 : " + String(players[1])
-        
-        turn = (turn == 0 ? 1 : 0)
+        changeTurn(true)
         endGame = checkEnd()
     }
     
