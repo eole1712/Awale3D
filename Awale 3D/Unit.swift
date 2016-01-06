@@ -11,27 +11,34 @@ import UIKit
 
 class Unit {
     
-    static let sphereSize : Float = 3.0
-    
-    static let pos = [ SCNVector3Make(sphereSize, 0, 0),
-        SCNVector3Make(-1 * sphereSize, 0, 0),
-        SCNVector3Make(0, -1 * sphereSize, 0),
-        SCNVector3Make(0, sphereSize, 0),
-        SCNVector3Make(0, 0, sphereSize),
-        SCNVector3Make(0, 0, -1 * sphereSize),
-        SCNVector3Make(0, 0, 0),
-        SCNVector3Make(-1 * sphereSize, -1 * sphereSize, 0),
-        SCNVector3Make(-1 * sphereSize, 1 * sphereSize, 0),
-        SCNVector3Make(1 * sphereSize, -1 * sphereSize, 0),
-        SCNVector3Make(1 * sphereSize, 1 * sphereSize, 0),
-        SCNVector3Make(0, -1 * sphereSize, -1 * sphereSize),
-        SCNVector3Make(0, -1 * sphereSize, 1 * sphereSize),
-        SCNVector3Make(0, 1 * sphereSize, -1 * sphereSize),
-        SCNVector3Make(1 * sphereSize, 0, 1 * sphereSize),
-        SCNVector3Make(-1 * sphereSize, 0, -1 * sphereSize),
-        SCNVector3Make(-1 * sphereSize, 0, 1 * sphereSize),
-        SCNVector3Make(1 * sphereSize, 0, -1 * sphereSize),
-        SCNVector3Make(1 * sphereSize, 0, 1 * sphereSize)]
+    class func getPositionOnCase(p: Int) -> SCNVector3 {
+        struct Position {
+            
+            static let sphereSize : Float = 3.0
+
+            static let pos : [SCNVector3] = [ SCNVector3Make(0, 0, 0),
+            SCNVector3Make(sphereSize, 0, 0),
+            SCNVector3Make(-1 * sphereSize, 0, 0),
+            SCNVector3Make(0, -1 * sphereSize, 0),
+            SCNVector3Make(0, sphereSize, 0),
+            SCNVector3Make(0, 0, sphereSize),
+            SCNVector3Make(0, 0, -1 * sphereSize),
+            SCNVector3Make(-1 * sphereSize, -1 * sphereSize, 0),
+            SCNVector3Make(-1 * sphereSize, 1 * sphereSize, 0),
+            SCNVector3Make(1 * sphereSize, -1 * sphereSize, 0),
+            SCNVector3Make(1 * sphereSize, 1 * sphereSize, 0),
+            SCNVector3Make(0, -1 * sphereSize, -1 * sphereSize),
+            SCNVector3Make(0, -1 * sphereSize, 1 * sphereSize),
+            SCNVector3Make(0, 1 * sphereSize, -1 * sphereSize),
+            SCNVector3Make(1 * sphereSize, 0, 1 * sphereSize),
+            SCNVector3Make(-1 * sphereSize, 0, -1 * sphereSize),
+            SCNVector3Make(-1 * sphereSize, 0, 1 * sphereSize),
+            SCNVector3Make(1 * sphereSize, 0, -1 * sphereSize),
+            SCNVector3Make(1 * sphereSize, 0, 1 * sphereSize)]
+        }
+        
+        return Position.pos[(p < 19 ? p : 0)]
+    }
     
     
     class func randColor() -> UIColor {
@@ -66,29 +73,37 @@ class Unit {
         return node
     }
 
-    class func getPositionIndiceFromID(id: Int, origin: Int) -> (Float, Float) {
-        let a : Float = origin / 6 == 0 ? Float(origin) : 11 - Float(origin)
-        let b : Float = id / 6 == 0 ? Float(id) : 11 - Float(id)
-        let c : Float = (origin / 6) == (id / 6) ? 0 : 15 * (origin / 6 == 1 ? 1 : -1)
+    class func getPositionIndiceFromID(id: Int, origin: Int, max: Int) -> (Float, Float) {
+        let a : Float = origin / (max / 2) == 0 ? Float(origin) : Float(max - 1) - Float(origin)
+        let b : Float = id / (max / 2) == 0 ? Float(id) : Float(max - 1) - Float(id)
+        let c : Float = (origin / (max / 2)) == (id / (max / 2)) ? 0 : 15 * (origin / (max / 2) == 1 ? 1 : -1)
         return (Float((b - a) * 15), Float(c))
     }
     
-    class func moveUnit(old: SCNNode, new: SCNNode, id: Int, origin: Int) {
+    class func moveUnit(old: SCNNode, new: SCNNode, id: Int, origin: Int, max: Int) {
         let unit = old.childNodes[0]
         let p = new.childNodes.count
         
-        let (x, y) = getPositionIndiceFromID(id, origin: origin)
+        let (x, y) = getPositionIndiceFromID(id, origin: origin, max: max)
         
         unit.removeFromParentNode()
         new.addChildNode(unit)
         unit.position = SCNVector3Make(unit.position.x + x, unit.position.y + y, unit.position.z)
         
-        unit.runAction(SCNAction.moveTo(pos[p], duration: 1))
+        unit.runAction(SCNAction.moveTo(getPositionOnCase(p), duration: 1))
     }
     
     class func clearNode(unit: SCNNode) {
         for child in unit.childNodes {
             child.removeFromParentNode()
         }
+    }
+    
+    class func selectNode(unit: SCNNode) {
+        unit.runAction(SCNAction.rotateByAngle(CGFloat(2 * M_PI), aroundAxis: SCNVector3(0, 1, 0), duration: 1))
+    }
+    
+    class func emptyNode(unit: SCNNode) {
+        unit.runAction(SCNAction.rotateByAngle(CGFloat(2 * M_PI), aroundAxis: SCNVector3(0, 0, 1), duration: 1))
     }
 }

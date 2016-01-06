@@ -46,7 +46,7 @@ class Map {
             
             let unit = Unit.newNodeWithUnit(Unit.newCase(), pos: position, parent: map)
             for j in 0..<4 {
-                Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.pos[j], parent: unit)
+                Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: unit)
             }
             
             _map.append((4, unit))
@@ -82,6 +82,11 @@ class Map {
         }
     }
     
+    func refreshScore() {
+        player1.string = "Player 1 : " + String(players[0])
+        player2.string = "Player 2 : " + String(players[1])
+    }
+    
     func doAction(c: Int)
     {
         if (c > 12) {
@@ -99,7 +104,7 @@ class Map {
                 i = (i + 1) % 12;
             }
             _map[i].0 += 1;
-            Unit.moveUnit(_map[c].1, new: _map[i].1, id: i, origin: c)
+            Unit.moveUnit(_map[c].1, new: _map[i].1, id: i, origin: c, max: 12)
             
             if (value < 12 && ((turn == 0 && i >= 6) || (turn == 1 && i < 6)) && (_map[i].0 == 2 || _map[i].0 == 3))
             {
@@ -110,10 +115,34 @@ class Map {
             i = (i + 1) % 12;
         }
         
-        player1.string = "Player 1 : " + String(players[0])
-        player2.string = "Player 2 : " + String(players[1])
+        refreshScore()
         changeTurn(true)
         endGame = checkEnd()
+    }
+    
+    func showPrediction(c: Int, state: UIGestureRecognizerState) {
+        if (c > 12) {
+            return
+        }
+        
+        var value = _map[c].0;
+        
+        var i = (c + 1) % 12;
+        
+        for (; value > 0; value--)
+        {
+            if (i == c) {
+                i = (i + 1) % 12;
+            }
+            
+            if (value < 12 && ((turn == 0 && i >= 6) || (turn == 1 && i < 6)) && (_map[i].0 == 1 || _map[i].0 == 2))
+            {
+                if (state == .Began) {
+                    Unit.selectNode(_map[i].1)
+                }
+            }
+            i = (i + 1) % 12;
+        }
     }
     
     func findNodeAction(parent: SCNNode, child: SCNNode) -> Int

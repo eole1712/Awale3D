@@ -13,32 +13,24 @@ import CoreGraphics
 
 
 func CGRand() -> CGFloat {
-    let a = CGFloat(Float(arc4random()) / Float(UINT32_MAX))
-    return a
+    return CGFloat(Float(arc4random()) / Float(UINT32_MAX))
 }
 
 class GameViewController: UIViewController {
     
     var map = Map.init()
+    var helper = Helper.init()
+    
     let inGame = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         let scnView = self.view as! SCNView
         
-        execScene(Menu.mainMenu(), funcName: "menuSceneTapped:")
-        //execScene(Menu.gameOverMenu(map), funcName: "menuSceneTapped:")
+        execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
         
         //scnView.autoenablesDefaultLighting = true
         scnView.backgroundColor = UIColor.whiteColor()
-    }
-    
-    func configureAction(funcName: Selector) -> UITapGestureRecognizer {
-        let tapRecognizer = UITapGestureRecognizer()
-        tapRecognizer.numberOfTapsRequired = 1
-        tapRecognizer.numberOfTouchesRequired = 1
-        tapRecognizer.addTarget(self, action: funcName)
-        return tapRecognizer
     }
     
     func gameSceneTapped(recognizer: UITapGestureRecognizer) {
@@ -52,7 +44,7 @@ class GameViewController: UIViewController {
             let node = result.node
             
             if (map.endGame) {
-                execScene(Menu.gameOverMenu(map), funcName: "menuSceneTapped:")
+                execScene(Menu.gameOverMenu(map), tapActionFuncName: "menuSceneTapped:")
                 map.endGame = false
                 return
             }
@@ -66,10 +58,30 @@ class GameViewController: UIViewController {
                     }
                 }
             } else if (node.childNodes.count == 0 && (node.geometry as? SCNText) == nil) {
-                node.runAction(SCNAction.repeatAction(SCNAction.rotateByX(CGRand(), y: CGRand(), z: CGRand(), duration: 0.5), count: 2))
+                Unit.emptyNode(node)
             }
         }
     }
+    
+    func gameScenePressed(recognizer: UILongPressGestureRecognizer) {
+        let scnView = self.view as! SCNView
+        let location = recognizer.locationInView(scnView)
+        let hitResults = scnView.hitTest(location, options: nil)
+        if hitResults.count > 0 {
+            let result = hitResults[0]
+            let node = result.node
+            
+            if (map.endGame) {
+                return
+            }
+            
+            let id = map.findNodeAction(map.map, child: node)
+            if (node.childNodes.count > 0 && id < 12 && ((map.turn == 0 && id < 6) || (map.turn == 1 && id > 5))) {
+                map.showPrediction(id, state: recognizer.state)
+            }
+        }
+    }
+    
     
     func menuSceneTapped(recognizer: UITapGestureRecognizer) {
         
@@ -92,37 +104,99 @@ class GameViewController: UIViewController {
                 text = a as! String
             }
             
-            if (text == "New Game" || text == "Replay") {
-                execScene(Menu.newGameScene(&map), funcName:  "gameSceneTapped:")
-            } else if (text == "Head Menu") {
-                execScene(Menu.mainMenu(), funcName: "menuSceneTapped:")
+            switch text {
+            case "New Game", "Replay":
+                execScene(Menu.newGameScene(&map), tapActionFuncName:  "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
+            case "Head Menu":
+                execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
+            case "How to play":
+                helper = Helper.init()
+                execScene(Menu.sceneHowToPlay1(helper), tapActionFuncName: "helperSceneTapped:")
+            case "About":
+                execScene(Menu.aboutMenu(), tapActionFuncName: "aboutSceneTapped:")
+            default: break
             }
         }
     }
     
-    func addCamera(scene: SCNScene) {
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3Make(-8, -23, 55)
-        scene.rootNode.addChildNode(cameraNode)
+    func aboutSceneTapped(recognizer: UITapGestureRecognizer) {
+        execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
     }
     
-    func addLight(scene: SCNScene) {
-        let omniLightNode = SCNNode()
-        omniLightNode.light = SCNLight()
-        omniLightNode.light!.type = SCNLightTypeSpot
-        omniLightNode.light!.color = UIColor(white: 0.75, alpha: 1.0)
-        omniLightNode.position = SCNVector3Make(-10, -60, 200)
-        scene.rootNode.addChildNode(omniLightNode)
+    
+    func helperSceneTapped(recognizer: UITapGestureRecognizer) {
+        
+        let scnView = self.view as! SCNView
+        let location = recognizer.locationInView(scnView)
+        let hitResults = scnView.hitTest(location, options: nil)
+        
+        if hitResults.count > 0 {
+            let result = hitResults[0]
+            let node = result.node
+            
+            switch helper.scene {
+            case 0:
+                if (node == helper.map[0] && helper.clicked == false) {
+                    helper.clicked = true
+                    execScene(Menu.sceneHowToPlay1(helper), tapActionFuncName: "helperSceneTapped:")
+                    helper.act()
+                } else if (node.name == "Next") {
+                    helper.prepareScene(1)
+                    execScene(Menu.sceneHowToPlay2(helper), tapActionFuncName: "helperSceneTapped:")
+                }
+            case 1:
+                if (node == helper.map[2] && helper.clicked == false) {
+                    helper.clicked = true
+                    execScene(Menu.sceneHowToPlay2(helper), tapActionFuncName: "helperSceneTapped:")
+                    helper.act()
+                } else if (node.name == "Next") {
+                    helper.prepareScene(2)
+                    execScene(Menu.sceneHowToPlay3(helper), tapActionFuncName: "helperSceneTapped:", pressActionFuncName: "helperScenePressed:")
+                }
+            case 2:
+                if (node.name == "Next") {
+                    helper.clicked = false
+                    execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
+                }
+            default: break
+            }
+        }
     }
     
-    func execScene(scene: SCNScene, funcName: Selector) {
+    func helperScenePressed(recognizer: UITapGestureRecognizer) {
+        
+        let scnView = self.view as! SCNView
+        let location = recognizer.locationInView(scnView)
+        let hitResults = scnView.hitTest(location, options: nil)
+        
+        if hitResults.count > 0 {
+            let result = hitResults[0]
+            let node = result.node
+            
+            switch helper.scene {
+            case 2:
+                if (recognizer.state == .Began && node == helper.map[2] && helper.clicked == false) {
+                    helper.clicked = true
+                    execScene(Menu.sceneHowToPlay3(helper), tapActionFuncName: "helperSceneTapped:")
+                    helper.act()
+                }
+            default: break
+            }
+        }
+    }
+    
+    func execScene(scene: SCNScene, tapActionFuncName: Selector, pressActionFuncName: Selector = nil) {
         let scnView = self.view as! SCNView
         
-        addCamera(scene)
-        addLight(scene)
+        Action.addCamera(scene)
+        Action.addLight(scene)
         scnView.scene = scene
-        scnView.gestureRecognizers = [configureAction(funcName)]
+        
+        var gesture : [UIGestureRecognizer] = [Action.configureTapAction(self, funcName: tapActionFuncName)]
+        if (pressActionFuncName != nil) {
+            gesture += [Action.configurePressAction(self, funcName: pressActionFuncName)]
+        }
+        scnView.gestureRecognizers = gesture
     }
     
     override func didReceiveMemoryWarning() {
