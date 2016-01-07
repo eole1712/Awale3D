@@ -89,6 +89,14 @@ class Helper {
         case 4:
             map[4].runAction(SCNAction.repeatActionForever(SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(0, 1, 0), duration: 1)))
             map[5].runAction(SCNAction.repeatActionForever(SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(0, 1, 0), duration: 1)))
+        case 5:
+            for i in 2..<5 {
+                Unit.moveUnit(map[1], new: map[i], id: i, origin: 1, max: 6)
+            }
+        case 6:
+            for i in 0..<6 {
+                map[i].runAction(SCNAction.repeatActionForever(SCNAction.rotateByX(CGRand(), y: CGRand(), z: CGRand(), duration: 0.5)))
+            }
         default: break
         }
         clicked = true
@@ -108,7 +116,6 @@ class Helper {
             for j in 0..<3 {
                 Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: map[0])
             }
-        case 2: break
         case 3:
             let pos = [0, 3, 0, 4, 1, 2]
             
@@ -125,6 +132,20 @@ class Helper {
                     Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: map[i])
                 }
             }
+        case 5:
+            createMap()
+            
+            let pos = [2, 3, 0, 0, 0, 0]
+
+            for i in 0..<6 {
+                for j in 0..<pos[i] {
+                    Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: map[i])
+                }
+            }
+        case 6:
+            clicked = true
+            createMap()
+            act()
         default: break
         }
     }

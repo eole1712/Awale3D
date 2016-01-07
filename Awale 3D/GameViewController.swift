@@ -169,7 +169,21 @@ class GameViewController: UIViewController {
                 }
             case 4:
                 if (node.name == "Next") {
+                    helper.prepareScene(5)
                     helper.clicked = false
+                    execScene(Menu.sceneHowToPlay5(helper), tapActionFuncName: "helperSceneTapped:")
+                }
+            case 5:
+                if (node == helper.map[1] && helper.clicked == false) {
+                    helper.clicked = true
+                    execScene(Menu.sceneHowToPlay5(helper), tapActionFuncName: "helperSceneTapped:")
+                    helper.act()
+                } else if (node.name == "Next") {
+                    helper.prepareScene(6)
+                    execScene(Menu.sceneHowToPlay6(helper), tapActionFuncName: "helperSceneTapped:")
+                }
+            case 6:
+                if (node.name == "Next") {
                     execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
                 }
             default: break

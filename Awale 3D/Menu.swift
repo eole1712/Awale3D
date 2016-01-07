@@ -251,6 +251,50 @@ class Menu {
         return scene
     }
     
+    class func sceneHowToPlay5(helper: Helper) -> SCNScene {
+        let scene = SCNScene()
+        
+        scene.rootNode.addChildNode(helper.node)
+        
+        if (helper.clicked) {
+            let (boxNode, txtNode) = Menu.createMenuButton("Next", w: 20)
+            boxNode.position = SCNVector3Make(-10, -45, 0)
+            txtNode.position = SCNVector3Make(-5, 0.4, 12)
+            boxNode.name = "Next"
+            scene.rootNode.addChildNode(boxNode)
+        } else {
+            var textNode = Menu.createMenuText("If your opponent has no more spheres in its boxes,", size: 4)
+            textNode.position = SCNVector3Make(-53, -45, 0)
+            scene.rootNode.addChildNode(textNode)
+            textNode = Menu.createMenuText("you must feed him.", size: 4)
+            textNode.position = SCNVector3Make(-20, -50, 0)
+            scene.rootNode.addChildNode(textNode)
+        }
+        return scene
+    }
+    
+    class func sceneHowToPlay6(helper: Helper) -> SCNScene {
+        let scene = SCNScene()
+        
+        scene.rootNode.addChildNode(helper.node)
+        
+        if (helper.clicked) {
+            let (boxNode, txtNode) = Menu.createMenuButton("End", w: 20)
+            boxNode.position = SCNVector3Make(30, -45, 0)
+            txtNode.position = SCNVector3Make(-10, 0.4, 12)
+            boxNode.name = "Next"
+            scene.rootNode.addChildNode(boxNode)
+        }
+        
+        var textNode = Menu.createMenuText("If you cannot feed him or if a player has eaten", size: 4)
+        textNode.position = SCNVector3Make(-60, -45, 0)
+        scene.rootNode.addChildNode(textNode)
+        textNode = Menu.createMenuText("at least 25 spheres, the game ends.", size: 4)
+        textNode.position = SCNVector3Make(-60, -50, 0)
+        scene.rootNode.addChildNode(textNode)
+        return scene
+    }
+    
     class func aboutMenu() -> SCNScene {
         let scene = SCNScene()
         
@@ -261,7 +305,7 @@ class Menu {
         textNode = Menu.createMenuText("Contact : contact[at]awale3d.com", size: 4)
         textNode.position = SCNVector3Make(-50, -45, 0)
         scene.rootNode.addChildNode(textNode)
-
+        
         textNode = Menu.createMenuText("http://www.Awale3D.com", size: 4)
         textNode.position = SCNVector3Make(-50, -50, 0)
         scene.rootNode.addChildNode(textNode)
