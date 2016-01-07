@@ -98,21 +98,24 @@ class Map {
         
         var i = (c + 1) % 12;
         
-        for (; value > 0; value--)
-        {
+        while (value > 0) {
             if (i == c) {
                 i = (i + 1) % 12;
             }
             _map[i].0 += 1;
             Unit.moveUnit(_map[c].1, new: _map[i].1, id: i, origin: c, max: 12)
-            
-            if (value < 12 && ((turn == 0 && i >= 6) || (turn == 1 && i < 6)) && (_map[i].0 == 2 || _map[i].0 == 3))
-            {
-                players[turn] += _map[i].0;
-                _map[i].0 = 0;
-                Unit.clearNode(_map[i].1)
+            value--;
+            if (value > 0) {
+                i = (i + 1) % 12;
             }
-            i = (i + 1) % 12;
+        }
+        var t = 0
+        while (((turn == 0 && i >= 6) || (turn == 1 && i < 6 && i >= 0)) && (_map[i].0 == 2 || _map[i].0 == 3)) {
+            players[turn] += _map[i].0
+            _map[i].0 = 0
+            Unit.clearNode(_map[i].1, time: t)
+            t++;
+            i--;
         }
         
         refreshScore()
@@ -129,19 +132,21 @@ class Map {
         
         var i = (c + 1) % 12;
         
-        for (; value > 0; value--)
-        {
+        while (value > 0) {
             if (i == c) {
                 i = (i + 1) % 12;
             }
-            
-            if (value < 12 && ((turn == 0 && i >= 6) || (turn == 1 && i < 6)) && (_map[i].0 == 1 || _map[i].0 == 2))
-            {
-                if (state == .Began) {
-                    Unit.selectNode(_map[i].1)
-                }
+            value--;
+            if (value > 0) {
+                i = (i + 1) % 12;
             }
-            i = (i + 1) % 12;
+        }
+        
+        while (((turn == 0 && i >= 6) || (turn == 1 && i < 6 && i >= 0)) && (_map[i].0 == 1 || _map[i].0 == 2)) {
+            if (state == .Began) {
+                Unit.selectNode(_map[i].1)
+            }
+            i--;
         }
     }
     

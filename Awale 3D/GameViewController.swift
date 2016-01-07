@@ -111,7 +111,7 @@ class GameViewController: UIViewController {
                 execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
             case "How to play":
                 helper = Helper.init()
-                execScene(Menu.sceneHowToPlay1(helper), tapActionFuncName: "helperSceneTapped:")
+                execScene(Menu.sceneHowToPlay0(helper), tapActionFuncName: "helperSceneTapped:")
             case "About":
                 execScene(Menu.aboutMenu(), tapActionFuncName: "aboutSceneTapped:")
             default: break
@@ -136,24 +136,38 @@ class GameViewController: UIViewController {
             
             switch helper.scene {
             case 0:
+                if (node.name == "Next") {
+                    helper.prepareScene(1)
+                    execScene(Menu.sceneHowToPlay1(helper), tapActionFuncName: "helperSceneTapped:")
+                }
+            case 1:
                 if (node == helper.map[0] && helper.clicked == false) {
                     helper.clicked = true
                     execScene(Menu.sceneHowToPlay1(helper), tapActionFuncName: "helperSceneTapped:")
                     helper.act()
                 } else if (node.name == "Next") {
-                    helper.prepareScene(1)
+                    helper.prepareScene(2)
                     execScene(Menu.sceneHowToPlay2(helper), tapActionFuncName: "helperSceneTapped:")
                 }
-            case 1:
+            case 2:
                 if (node == helper.map[2] && helper.clicked == false) {
                     helper.clicked = true
                     execScene(Menu.sceneHowToPlay2(helper), tapActionFuncName: "helperSceneTapped:")
                     helper.act()
                 } else if (node.name == "Next") {
-                    helper.prepareScene(2)
+                    helper.prepareScene(3)
                     execScene(Menu.sceneHowToPlay3(helper), tapActionFuncName: "helperSceneTapped:", pressActionFuncName: "helperScenePressed:")
                 }
-            case 2:
+            case 3:
+                if (node == helper.map[1] && helper.clicked == false) {
+                    helper.clicked = true
+                    execScene(Menu.sceneHowToPlay3(helper), tapActionFuncName: "helperSceneTapped:")
+                    helper.act()
+                } else if (node.name == "Next") {
+                    helper.prepareScene(4)
+                    execScene(Menu.sceneHowToPlay4(helper), tapActionFuncName: "helperSceneTapped:", pressActionFuncName: "helperScenePressed:")
+                }
+            case 4:
                 if (node.name == "Next") {
                     helper.clicked = false
                     execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
@@ -174,10 +188,10 @@ class GameViewController: UIViewController {
             let node = result.node
             
             switch helper.scene {
-            case 2:
+            case 4:
                 if (recognizer.state == .Began && node == helper.map[2] && helper.clicked == false) {
                     helper.clicked = true
-                    execScene(Menu.sceneHowToPlay3(helper), tapActionFuncName: "helperSceneTapped:")
+                    execScene(Menu.sceneHowToPlay4(helper), tapActionFuncName: "helperSceneTapped:")
                     helper.act()
                 }
             default: break

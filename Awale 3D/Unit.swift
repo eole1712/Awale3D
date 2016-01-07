@@ -93,9 +93,12 @@ class Unit {
         unit.runAction(SCNAction.moveTo(getPositionOnCase(p), duration: 1))
     }
 
-    class func clearNode(unit: SCNNode) {
+    class func clearNode(unit: SCNNode, time: Int) {
+        let a : Double = 1 + (0.3 * Double(time))
+        
+        print(a)
         let action = SCNAction.sequence([
-            SCNAction.waitForDuration(1),
+            SCNAction.waitForDuration(a),
             SCNAction.scaleTo(1.8, duration: 0.3),
             SCNAction.scaleTo(0, duration: 0.2),
             SCNAction.removeFromParentNode()])

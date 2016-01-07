@@ -142,24 +142,45 @@ class Menu {
         return scene
     }
     
+    class func sceneHowToPlay0(helper: Helper) -> SCNScene {
+        let scene = SCNScene()
+        
+        scene.rootNode.addChildNode(helper.node)
+        
+        var textNode = Menu.createMenuText("The game board consists of two halves,", size: 4)
+        textNode.position = SCNVector3Make(-60, -45, 0)
+        scene.rootNode.addChildNode(textNode)
+        textNode = Menu.createMenuText("with six box in each half !", size: 4)
+        textNode.position = SCNVector3Make(-47, -50, 0)
+        scene.rootNode.addChildNode(textNode)
+        if (helper.clicked) {
+            let (boxNode, txtNode) = Menu.createMenuButton("Next", w: 20)
+            boxNode.position = SCNVector3Make(30, -45, 0)
+            txtNode.position = SCNVector3Make(-11, 0.4, 12)
+            boxNode.name = "Next"
+            scene.rootNode.addChildNode(boxNode)
+        }
+        return scene
+    }
+    
     class func sceneHowToPlay1(helper: Helper) -> SCNScene {
         let scene = SCNScene()
         
         scene.rootNode.addChildNode(helper.node)
         
-        var textNode = Menu.createMenuText("Tap on a filled box to distribute its spheres", size: 4)
-        textNode.position = SCNVector3Make(-50, -45, 0)
-        scene.rootNode.addChildNode(textNode)
-        textNode = Menu.createMenuText("in the following boxes !", size: 4)
-        textNode.position = SCNVector3Make(-32, -50, 0)
-        scene.rootNode.addChildNode(textNode)
-        
         if (helper.clicked) {
             let (boxNode, txtNode) = Menu.createMenuButton("Next", w: 20)
-            boxNode.position = SCNVector3Make(15, -15, 0)
-            txtNode.position = SCNVector3Make(-9, -4, 12)
+            boxNode.position = SCNVector3Make(-10, -45, 0)
+            txtNode.position = SCNVector3Make(-5, 0.4, 12)
             boxNode.name = "Next"
             scene.rootNode.addChildNode(boxNode)
+        } else {
+            var textNode = Menu.createMenuText("Tap on a filled box to distribute its spheres", size: 4)
+            textNode.position = SCNVector3Make(-50, -45, 0)
+            scene.rootNode.addChildNode(textNode)
+            textNode = Menu.createMenuText("in the following boxes !", size: 4)
+            textNode.position = SCNVector3Make(-32, -50, 0)
+            scene.rootNode.addChildNode(textNode)
         }
         return scene
     }
@@ -169,19 +190,19 @@ class Menu {
         
         scene.rootNode.addChildNode(helper.node)
         
-        var textNode = Menu.createMenuText("You must add a sphere to an enemy box containing only", size: 4)
-        textNode.position = SCNVector3Make(-60, -45, 0)
-        scene.rootNode.addChildNode(textNode)
-        textNode = Menu.createMenuText("one or two spheres to be able to eat them all !", size: 4)
-        textNode.position = SCNVector3Make(-50, -50, 0)
-        scene.rootNode.addChildNode(textNode)
-        
         if (helper.clicked) {
             let (boxNode, txtNode) = Menu.createMenuButton("Next", w: 20)
-            boxNode.position = SCNVector3Make(15, -15, 0)
-            txtNode.position = SCNVector3Make(-9, -4, 12)
+            boxNode.position = SCNVector3Make(-10, -45, 0)
+            txtNode.position = SCNVector3Make(-5, 0.4, 12)
             boxNode.name = "Next"
             scene.rootNode.addChildNode(boxNode)
+        } else {
+            var textNode = Menu.createMenuText("If your last distributed sphere falls into an enemy box", size: 4)
+            textNode.position = SCNVector3Make(-58, -45, 0)
+            scene.rootNode.addChildNode(textNode)
+            textNode = Menu.createMenuText("containing only one or two spheres, you eat them all !", size: 4)
+            textNode.position = SCNVector3Make(-58, -50, 0)
+            scene.rootNode.addChildNode(textNode)
         }
         return scene
     }
@@ -191,19 +212,41 @@ class Menu {
         
         scene.rootNode.addChildNode(helper.node)
         
-        var textNode = Menu.createMenuText("Press on a box to find out which enemy spheres", size: 4)
-        textNode.position = SCNVector3Make(-53, -45, 0)
-        scene.rootNode.addChildNode(textNode)
-        textNode = Menu.createMenuText("he can eat !", size: 4)
-        textNode.position = SCNVector3Make(-20, -50, 0)
-        scene.rootNode.addChildNode(textNode)
+        if (helper.clicked) {
+            let (boxNode, txtNode) = Menu.createMenuButton("Next", w: 20)
+            boxNode.position = SCNVector3Make(-10, -45, 0)
+            txtNode.position = SCNVector3Make(-5, 0.4, 12)
+            boxNode.name = "Next"
+            scene.rootNode.addChildNode(boxNode)
+        } else {
+            var textNode = Menu.createMenuText("When this happens,", size: 4)
+            textNode.position = SCNVector3Make(-28, -45, 0)
+            scene.rootNode.addChildNode(textNode)
+            textNode = Menu.createMenuText("the preceding ennemy box is also examined !", size: 4)
+            textNode.position = SCNVector3Make(-50, -50, 0)
+            scene.rootNode.addChildNode(textNode)
+        }
+        return scene
+    }
+    
+    class func sceneHowToPlay4(helper: Helper) -> SCNScene {
+        let scene = SCNScene()
+        
+        scene.rootNode.addChildNode(helper.node)
         
         if (helper.clicked) {
             let (boxNode, txtNode) = Menu.createMenuButton("Next", w: 20)
-            boxNode.position = SCNVector3Make(15, -15, 0)
-            txtNode.position = SCNVector3Make(-9, -4, 12)
+            boxNode.position = SCNVector3Make(-10, -45, 0)
+            txtNode.position = SCNVector3Make(-5, 0.4, 12)
             boxNode.name = "Next"
             scene.rootNode.addChildNode(boxNode)
+        } else {
+            var textNode = Menu.createMenuText("Press on a box to find out which enemy spheres", size: 4)
+            textNode.position = SCNVector3Make(-53, -45, 0)
+            scene.rootNode.addChildNode(textNode)
+            textNode = Menu.createMenuText("he can eat !", size: 4)
+            textNode.position = SCNVector3Make(-20, -50, 0)
+            scene.rootNode.addChildNode(textNode)
         }
         return scene
     }
