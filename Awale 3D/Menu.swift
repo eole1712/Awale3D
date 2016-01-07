@@ -286,10 +286,10 @@ class Menu {
             scene.rootNode.addChildNode(boxNode)
         }
         
-        var textNode = Menu.createMenuText("If you cannot feed him or if a player has eaten", size: 4)
+        var textNode = Menu.createMenuText("If you cannot feed him or if a player has", size: 4)
         textNode.position = SCNVector3Make(-60, -45, 0)
         scene.rootNode.addChildNode(textNode)
-        textNode = Menu.createMenuText("at least 25 spheres, the game ends.", size: 4)
+        textNode = Menu.createMenuText("eaten at least 25 spheres, the game ends.", size: 4)
         textNode.position = SCNVector3Make(-60, -50, 0)
         scene.rootNode.addChildNode(textNode)
         return scene

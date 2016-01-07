@@ -56,15 +56,16 @@ class Map {
     
     func checkEnd() -> Bool {
         var nb = 0
-        var total = 0
         
         for i in 0..<12 {
             if ((turn == 0 && i < 6) || (turn == 1 && i >= 6)) {
                 nb += _map[i].0
             }
-            total += _map[i].0
         }
-        return ((total > 6 && nb > 0) ? false : true)
+        if (players[0] >= 25 || players[1] >= 25) {
+            return true
+        }
+        return ((nb > 0) ? false : true)
     }
     
     func changeTurn(needChange: Bool) {

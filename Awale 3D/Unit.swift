@@ -94,11 +94,8 @@ class Unit {
     }
 
     class func clearNode(unit: SCNNode, time: Int) {
-        let a : Double = 1 + (0.3 * Double(time))
-        
-        print(a)
         let action = SCNAction.sequence([
-            SCNAction.waitForDuration(a),
+            SCNAction.waitForDuration(1 + (0.3 * Double(time))),
             SCNAction.scaleTo(1.8, duration: 0.3),
             SCNAction.scaleTo(0, duration: 0.2),
             SCNAction.removeFromParentNode()])
