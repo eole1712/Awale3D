@@ -10,16 +10,30 @@ import SceneKit
 import UIKit
 
 class Helper {
-    let node : SCNNode
+    var node = SCNNode()
     var map = [SCNNode]()
     var scene = 0
-    
+        
     var clicked : Bool
     
+    let ally = Menu.createMenuText("Your boxes", size: 4)
+    let enemy = Menu.createMenuText("Enemy boxes", size: 4)
+    
     init() {
+        ally.position = SCNVector3(-25, -27, 0)
+        enemy.position = SCNVector3(-15, -11, 0)
+        ally.opacity = 0
+        enemy.opacity = 0
         node = SCNNode()
         clicked = false
         
+        createMap()
+        prepareScene(0)
+    }
+    
+    func createMap() {
+        node = SCNNode()
+        map = [SCNNode]()
         for i in 0..<6 {
             let id : Float = (i / 3 == 1) ? -1 : 1
             let start : Float = (i / 3 == 1) ? -25 : 5
@@ -28,12 +42,37 @@ class Helper {
             map.append(unit)
             node.addChildNode(unit)
         }
-        prepareScene(0)
     }
     
     func act() {
         switch scene {
-        case 0: break
+        case 0:
+            var action = SCNAction.sequence([
+                SCNAction.waitForDuration(1),
+                SCNAction.moveByX(30, y: 0, z: 0, duration: 0.5),
+                SCNAction.waitForDuration(0.5),
+                SCNAction.moveByX(-30, y: 0, z: 0, duration: 0.5)
+                ])
+            let action2 = SCNAction.sequence([
+                SCNAction.waitForDuration(1),
+                SCNAction.moveByX(-30, y: 0, z: 0, duration: 0.5),
+                SCNAction.waitForDuration(0.5),
+                SCNAction.moveByX(30, y: 0, z: 0, duration: 0.5)
+                ])
+            for i in 0..<3 {
+                map[i].runAction(SCNAction.repeatActionForever(action), forKey: "act0")
+            }
+            for i in 3..<6 {
+                map[i].runAction(SCNAction.repeatActionForever(action2), forKey: "act0")
+            }
+            action = SCNAction.sequence([
+                SCNAction.waitForDuration(1),
+                SCNAction.fadeInWithDuration(0.5),
+                SCNAction.waitForDuration(0.5),
+                SCNAction.fadeOutWithDuration(0.5),
+                ])
+            ally.runAction(SCNAction.repeatActionForever(action))
+            enemy.runAction(SCNAction.repeatActionForever(action))
         case 1:
             for i in 1...3 {
                 Unit.moveUnit(map[0], new: map[i], id: i, origin: 0, max: 6)
@@ -59,8 +98,13 @@ class Helper {
         scene = idScene
         clicked = false
         switch scene {
-        case 0: clicked = true
+        case 0:
+            clicked = true
+            node.addChildNode(ally)
+            node.addChildNode(enemy)
+            act()
         case 1:
+            createMap()
             for j in 0..<3 {
                 Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: map[0])
             }
