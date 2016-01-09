@@ -80,7 +80,7 @@ class Unit {
         return (Float((b - a) * 15), Float(c))
     }
     
-    class func moveUnit(old: SCNNode, new: SCNNode, id: Int, origin: Int, max: Int) {
+    class func moveUnit(old: SCNNode, new: SCNNode, id: Int, origin: Int, max: Int, time: Double = 0.0) {
         let unit = old.childNodes[0]
         let p = new.childNodes.count
         
@@ -90,12 +90,15 @@ class Unit {
         new.addChildNode(unit)
         unit.position = SCNVector3Make(unit.position.x + x, unit.position.y + y, unit.position.z)
         
-        unit.runAction(SCNAction.moveTo(getPositionOnCase(p), duration: 1))
+        unit.runAction(SCNAction.sequence([
+            SCNAction.waitForDuration(time),
+            SCNAction.moveTo(getPositionOnCase(p), duration: 1)
+            ]))
     }
 
-    class func clearNode(unit: SCNNode, time: Int) {
+    class func clearNode(unit: SCNNode, time: Double = 0.0) {
         let action = SCNAction.sequence([
-            SCNAction.waitForDuration(1 + (0.3 * Double(time))),
+            SCNAction.waitForDuration(time),
             SCNAction.scaleTo(1.8, duration: 0.3),
             SCNAction.scaleTo(0, duration: 0.2),
             SCNAction.removeFromParentNode()])

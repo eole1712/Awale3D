@@ -97,8 +97,11 @@ class Menu {
         return scene
     }
     
-    class func gameOverMenu(map: Map) -> SCNScene {
+    class func gameOverMenu(map: Map, inout player : [AI?]) -> SCNScene {
         let scene = SCNScene()
+
+        player[0] = nil
+        player[1] = nil
         
         var node = Menu.createMenuText("Game Over !", size: 8)
         node.position = SCNVector3Make(-30, -10, 0)
@@ -123,8 +126,16 @@ class Menu {
         return scene
     }
     
-    class func newGameScene(inout map: Map) -> SCNScene {
+    class func gameScene(inout map: Map, inout player: [AI?], mode: Int) -> SCNScene {
         map = Map.init()
+        
+        if (mode == 2) {
+            player[0] = AI.init(map: map, turn: 0)
+        }
+        
+        if (mode >= 1) {
+            player[1] = AI.init(map: map, turn: 1)
+        }
         
         let scene = SCNScene()
         
@@ -138,6 +149,34 @@ class Menu {
         textNode = SCNNode(geometry: map.player1)
         textNode.position = SCNVector3Make(-55, -45, 0)
         scene.rootNode.addChildNode(textNode)
+                
+        return scene
+    }
+    
+    class func newGameScene() -> SCNScene {
+
+        let scene = SCNScene()
+
+        var (boxNode, textNode) = Menu.createMenuButton("Player vs AI")
+        boxNode.position = SCNVector3Make(-7, -12, 0)
+        textNode.position = SCNVector3Make(-14, -4, 12)
+        
+        scene.rootNode.addChildNode(boxNode)
+        
+        (boxNode, textNode) = Menu.createMenuButton("Two players")
+        boxNode.position = SCNVector3Make(-7, -22, 0)
+        textNode.position = SCNVector3Make(-14, -2.5, 12)
+        scene.rootNode.addChildNode(boxNode)
+
+        (boxNode, textNode) = Menu.createMenuButton("Two AI")
+        boxNode.position = SCNVector3Make(-7, -32, 0)
+        textNode.position = SCNVector3Make(-8, -1.25, 12)
+        scene.rootNode.addChildNode(boxNode)
+
+        (boxNode, textNode) = Menu.createMenuButton("Return")
+        boxNode.position = SCNVector3Make(-7, -42, 0)
+        textNode.position = SCNVector3Make(-8, -0, 12)
+        scene.rootNode.addChildNode(boxNode)
         
         return scene
     }

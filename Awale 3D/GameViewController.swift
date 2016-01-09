@@ -21,6 +21,8 @@ class GameViewController: UIViewController {
     var map = Map.init()
     var helper = Helper.init()
     
+    var player : [AI?] = [nil, nil]
+    
     let inGame = false
     
     override func viewDidLoad() {
@@ -31,6 +33,26 @@ class GameViewController: UIViewController {
         
         //scnView.autoenablesDefaultLighting = true
         scnView.backgroundColor = UIColor.whiteColor()
+    }
+    
+    func doAIAction() {
+        
+        let scnView = self.view as! SCNView
+        
+        if (player[map.turn] != nil && map.endGame == false) {
+            if let act = player[map.turn]!.nextAction() {
+                let time = map.doAction(act)
+                
+                if (player[(map.turn == 0 ? 1 : 0)] != nil) {
+                    scnView.scene?.rootNode.runAction(SCNAction.waitForDuration(time + 0.2), completionHandler: doAIAction)
+                }
+            } else {
+                map.endGame = true
+            }
+            if (map.endGame) {
+                map.endGameAction()
+            }
+        }
     }
     
     func gameSceneTapped(recognizer: UITapGestureRecognizer) {
@@ -44,21 +66,29 @@ class GameViewController: UIViewController {
             let node = result.node
             
             if (map.endGame) {
-                execScene(Menu.gameOverMenu(map), tapActionFuncName: "menuSceneTapped:")
+                execScene(Menu.gameOverMenu(map, player: &player), tapActionFuncName: "menuSceneTapped:")
                 map.endGame = false
                 return
             }
             
-            let id = map.findNodeAction(map.map, child: node)
-            if (node.childNodes.count > 0 && id < 12 && ((map.turn == 0 && id < 6) || (map.turn == 1 && id > 5))) {
-                map.doAction(id)
-                if (map.endGame) {
-                    for i in 0..<12 {
-                        map._map[i].1.runAction(SCNAction.repeatActionForever(SCNAction.rotateByX(CGRand(), y: CGRand(), z: CGRand(), duration: 0.5)))
-                    }
+            if let id = map.findNodeAction(map.map, child: node) {
+                
+                if (map._map[id].0 == 0) {
+                    Unit.emptyNode(node)
+                    return
                 }
-            } else if (node.childNodes.count == 0 && (node.geometry as? SCNText) == nil) {
-                Unit.emptyNode(node)
+                if ((player[0] == nil && map.turn == 0 && id < 6) || (player[1] == nil && map.turn == 1 && id > 5)) {
+                    let time = map.doAction(id)
+                    
+                    //AI TIME
+                    if (map.endGame == false && player[1] != nil) {
+                        scnView.scene?.rootNode.runAction(SCNAction.waitForDuration(time + 0.2), completionHandler: doAIAction)
+                    }
+                    //AI END
+                }
+                if (map.endGame) {
+                    map.endGameAction()
+                }
             }
         }
     }
@@ -75,13 +105,13 @@ class GameViewController: UIViewController {
                 return
             }
             
-            let id = map.findNodeAction(map.map, child: node)
-            if (node.childNodes.count > 0 && id < 12 && ((map.turn == 0 && id < 6) || (map.turn == 1 && id > 5))) {
-                map.showPrediction(id, state: recognizer.state)
+            if let id = map.findNodeAction(map.map, child: node) {
+                if (((map.turn == 0 && id < 6 && player[0] == nil) || (map.turn == 1 && id > 5 && player[1] == nil))) {
+                    map.showPrediction(id, state: recognizer.state)
+                }
             }
         }
     }
-    
     
     func menuSceneTapped(recognizer: UITapGestureRecognizer) {
         
@@ -106,14 +136,21 @@ class GameViewController: UIViewController {
             
             switch text {
             case "New Game", "Replay":
-                execScene(Menu.newGameScene(&map), tapActionFuncName:  "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
-            case "Head Menu":
+                execScene(Menu.newGameScene(), tapActionFuncName: "menuSceneTapped:")
+            case "Head Menu", "Return":
                 execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
             case "How to play":
                 helper = Helper.init()
                 execScene(Menu.sceneHowToPlay0(helper), tapActionFuncName: "helperSceneTapped:")
             case "About":
                 execScene(Menu.aboutMenu(), tapActionFuncName: "aboutSceneTapped:")
+            case "Player vs AI":
+                execScene(Menu.gameScene(&map, player: &player, mode: 1), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
+            case "Two players":
+                execScene(Menu.gameScene(&map, player: &player, mode: 0), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
+            case "Two AI":
+                execScene(Menu.gameScene(&map, player: &player, mode: 2), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
+                scnView.scene?.rootNode.runAction(SCNAction.waitForDuration(1), completionHandler: doAIAction)
             default: break
             }
         }

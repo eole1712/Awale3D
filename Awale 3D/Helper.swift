@@ -79,13 +79,13 @@ class Helper {
             }
         case 2:
             Unit.moveUnit(map[2], new: map[3], id: 3, origin: 2, max: 6)
-            Unit.clearNode(map[3], time: 0)
+            Unit.clearNode(map[3], time: 1)
         case 3:
             for i in 2..<6 {
                 Unit.moveUnit(map[1], new: map[i], id: i, origin: 1, max: 6)
             }
-            Unit.clearNode(map[5], time: 0)
-            Unit.clearNode(map[4], time: 1)
+            Unit.clearNode(map[5], time: 1)
+            Unit.clearNode(map[4], time: 1.3)
         case 4:
             map[4].runAction(SCNAction.repeatActionForever(SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(0, 1, 0), duration: 1)))
             map[5].runAction(SCNAction.repeatActionForever(SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(0, 1, 0), duration: 1)))

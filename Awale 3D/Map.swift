@@ -88,11 +88,70 @@ class Map {
         player2.string = "Player 2 : " + String(players[1])
     }
     
-    func doAction(c: Int)
-    {
-        if (c > 12) {
-            return
+    func howMuchCanEat(c: Int) -> Int {
+        let t = (c >= 6 ? 1 : 0)
+        
+        
+        var value = _map[c].0;
+        var score = 0
+        
+        var i = (c + 1) % 12;
+        
+        while (value > 0) {
+            if (i == c) {
+                i = (i + 1) % 12;
+            }
+            value--;
+            if (value > 0) {
+                i = (i + 1) % 12;
+            }
         }
+        
+        while (((t == 0 && i >= 6) || (t == 1 && i < 6 && i >= 0)) && (_map[i].0 == 1 || _map[i].0 == 2)) {
+            score += _map[i].0 + 1
+            i--;
+        }
+        return score
+    }
+    
+    func canBeEatenFrom(c: Int, from: Int) -> Bool {
+        if (_map[c].0 != 1 && _map[c].0 != 2) {
+            return false
+        }
+        
+        let turn = from < 6 ? 0 : 1
+        let id = (from + _map[from].0) % 12
+        
+        if (id == c) {
+            return true
+        } else if ((turn == 0 && id < 6) || (turn == 1 && id >= 6)) {
+          return false
+        } else if (id > c) {
+            for (var i = id; i > c; i--) {
+                if (canBeEatenFrom(i, from: from) == false) {
+                    return false
+                }
+            }
+            return true
+        }
+        return false
+    }
+    
+    func canBeEaten(c: Int) -> Bool {
+        if (_map[c].0 != 1 && _map[c].0 != 2) {
+            return false
+        }
+        
+        for i in (c >= 6 ? 0..<6 : 6..<12) {
+            if (canBeEatenFrom(c, from: i) == true) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    
+    func doAction(c: Int, var time: Double = 0.0) -> Double {
         
         var value = _map[c].0;
         _map[c].0 = 0;
@@ -104,33 +163,32 @@ class Map {
                 i = (i + 1) % 12;
             }
             _map[i].0 += 1;
-            Unit.moveUnit(_map[c].1, new: _map[i].1, id: i, origin: c, max: 12)
+            Unit.moveUnit(_map[c].1, new: _map[i].1, id: i, origin: c, max: 12, time: time)
             value--;
             if (value > 0) {
                 i = (i + 1) % 12;
             }
         }
-        var t = 0
+
+        time += 1.0
+        
         while (((turn == 0 && i >= 6) || (turn == 1 && i < 6 && i >= 0)) && (_map[i].0 == 2 || _map[i].0 == 3)) {
             players[turn] += _map[i].0
             _map[i].0 = 0
-            Unit.clearNode(_map[i].1, time: t)
-            t++;
+            Unit.clearNode(_map[i].1, time: time)
+            time += 0.3
             i--;
         }
         
         refreshScore()
         changeTurn(true)
         endGame = checkEnd()
+        return time
     }
     
     func showPrediction(c: Int, state: UIGestureRecognizerState) {
-        if (c > 12) {
-            return
-        }
         
         var value = _map[c].0;
-        
         var i = (c + 1) % 12;
         
         while (value > 0) {
@@ -151,7 +209,7 @@ class Map {
         }
     }
     
-    func findNodeAction(parent: SCNNode, child: SCNNode) -> Int
+    func findNodeAction(parent: SCNNode, child: SCNNode) -> Int?
     {
         var i = 0
         
@@ -161,6 +219,12 @@ class Map {
             }
             i++
         }
-        return 12
+        return nil
+    }
+    
+    func endGameAction() {
+        for i in 0..<12 {
+            _map[i].1.runAction(SCNAction.repeatActionForever(SCNAction.rotateByX(CGRand(), y: CGRand(), z: CGRand(), duration: 0.5)))
+        }
     }
 }
