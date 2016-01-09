@@ -14,7 +14,7 @@ class Menu {
         let text = SCNText()
         text.string = name
         text.font = UIFont(name: (text.font?.fontName)!, size: 5)
-        text.firstMaterial?.diffuse.contents = UIColor(colorLiteralRed: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+        text.firstMaterial?.diffuse.contents = UIColor(colorLiteralRed: 0.8, green: 0.8, blue: 0.8, alpha: 1)
         
         let box = SCNBox(width: w, height: h, length: 10, chamferRadius: 1.0)
         box.firstMaterial!.transparency = 0.4
@@ -41,7 +41,7 @@ class Menu {
         let text = SCNText()
         text.string = name
         text.font = UIFont(name: (text.font?.fontName)!, size: size)
-        text.firstMaterial?.diffuse.contents = UIColor(colorLiteralRed: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+        text.firstMaterial?.diffuse.contents = UIColor(colorLiteralRed: 0.8, green: 0.8, blue: 0.8, alpha: 1)
         
         return SCNNode(geometry: text)
     }

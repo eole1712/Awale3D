@@ -53,8 +53,8 @@ class Unit {
     
     class func newUnit() -> SCNGeometry {
         let unit = SCNSphere(radius: 2.0)
-        unit.firstMaterial!.diffuse.contents = UIColor.grayColor()
-        unit.firstMaterial!.specular.contents = UIColor.whiteColor()
+        unit.firstMaterial!.diffuse.contents = UIColor.whiteColor()
+        unit.firstMaterial!.specular.contents = UIColor.grayColor()
         
         return unit
     }
@@ -63,6 +63,8 @@ class Unit {
         let unit = SCNBox(width: 12, height: 12, length: 12, chamferRadius: 1.0)
         
         unit.firstMaterial!.transparency = 0.4
+        unit.firstMaterial!.diffuse.contents = UIColor.whiteColor()
+        unit.firstMaterial!.specular.contents = UIColor.grayColor()
         return unit
     }
     
