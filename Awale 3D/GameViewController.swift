@@ -31,8 +31,8 @@ class GameViewController: UIViewController {
         
         execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
         
-        scnView.autoenablesDefaultLighting = false
-        scnView.backgroundColor = UIColor.blackColor()
+        //scnView.autoenablesDefaultLighting = true
+        scnView.backgroundColor = UIColor.whiteColor()
     }
     
     func doAIAction() {
