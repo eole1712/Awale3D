@@ -45,20 +45,6 @@ class AI {
         return nil
     }
     
-    private func getPlayableCases() -> [Int]? {
-        var tab = [Int]()
-        
-        for i in (turn == 1 ? 6..<12 : 0..<6) {
-            if (map.simulateMove(i) == 0) {
-                tab.append(i)
-            }
-        }
-        if (tab.count == 0) {
-            return nil
-        }
-        return tab
-    }
-    
     private func doAction() -> Int? {
         if let canEat = tryToEat() {
             if (canEat.score > 0) {
@@ -68,11 +54,6 @@ class AI {
         
         if let canBeEaten = soloSphereCheck() {
             return canBeEaten
-        }
-
-        if let tab = getPlayableCases() {
-            let randAct : Int = Int(arc4random_uniform(UInt32(tab.count)))
-            return randAct
         }
         
         let randAct : Int = (turn * 6) + Int(arc4random_uniform(6))
