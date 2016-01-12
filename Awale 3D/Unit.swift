@@ -15,26 +15,26 @@ class Unit {
         struct Position {
             
             static let sphereSize : Float = 3.0
-
+            
             static let pos : [SCNVector3] = [ SCNVector3Make(0, 0, 0),
-            SCNVector3Make(sphereSize, 0, 0),
-            SCNVector3Make(-1 * sphereSize, 0, 0),
-            SCNVector3Make(0, -1 * sphereSize, 0),
-            SCNVector3Make(0, sphereSize, 0),
-            SCNVector3Make(0, 0, sphereSize),
-            SCNVector3Make(0, 0, -1 * sphereSize),
-            SCNVector3Make(-1 * sphereSize, -1 * sphereSize, 0),
-            SCNVector3Make(-1 * sphereSize, 1 * sphereSize, 0),
-            SCNVector3Make(1 * sphereSize, -1 * sphereSize, 0),
-            SCNVector3Make(1 * sphereSize, 1 * sphereSize, 0),
-            SCNVector3Make(0, -1 * sphereSize, -1 * sphereSize),
-            SCNVector3Make(0, -1 * sphereSize, 1 * sphereSize),
-            SCNVector3Make(0, 1 * sphereSize, -1 * sphereSize),
-            SCNVector3Make(1 * sphereSize, 0, 1 * sphereSize),
-            SCNVector3Make(-1 * sphereSize, 0, -1 * sphereSize),
-            SCNVector3Make(-1 * sphereSize, 0, 1 * sphereSize),
-            SCNVector3Make(1 * sphereSize, 0, -1 * sphereSize),
-            SCNVector3Make(1 * sphereSize, 0, 1 * sphereSize)]
+                SCNVector3Make(sphereSize, 0, 0),
+                SCNVector3Make(-1 * sphereSize, 0, 0),
+                SCNVector3Make(0, -1 * sphereSize, 0),
+                SCNVector3Make(0, sphereSize, 0),
+                SCNVector3Make(0, 0, sphereSize),
+                SCNVector3Make(0, 0, -1 * sphereSize),
+                SCNVector3Make(-1 * sphereSize, -1 * sphereSize, 0),
+                SCNVector3Make(-1 * sphereSize, 1 * sphereSize, 0),
+                SCNVector3Make(1 * sphereSize, -1 * sphereSize, 0),
+                SCNVector3Make(1 * sphereSize, 1 * sphereSize, 0),
+                SCNVector3Make(0, -1 * sphereSize, -1 * sphereSize),
+                SCNVector3Make(0, -1 * sphereSize, 1 * sphereSize),
+                SCNVector3Make(0, 1 * sphereSize, -1 * sphereSize),
+                SCNVector3Make(1 * sphereSize, 0, 1 * sphereSize),
+                SCNVector3Make(-1 * sphereSize, 0, -1 * sphereSize),
+                SCNVector3Make(-1 * sphereSize, 0, 1 * sphereSize),
+                SCNVector3Make(1 * sphereSize, 0, -1 * sphereSize),
+                SCNVector3Make(1 * sphereSize, 0, 1 * sphereSize)]
         }
         
         return Position.pos[(p < 19 ? p : 0)]
@@ -51,18 +51,22 @@ class Unit {
     }
     
     
-    class func newUnit() -> SCNGeometry {
+    class func newUnit(night: Bool) -> SCNGeometry {
         let unit = SCNSphere(radius: 2.0)
-        unit.firstMaterial!.diffuse.contents = UIColor.grayColor()
-        unit.firstMaterial!.specular.contents = UIColor.whiteColor()
+        unit.firstMaterial!.diffuse.contents = night ? UIColor.whiteColor() : UIColor.grayColor()
+        unit.firstMaterial!.specular.contents = night ? UIColor.grayColor() : UIColor.whiteColor()
         
         return unit
     }
     
-    class func newCase() -> SCNGeometry {
+    class func newCase(night: Bool) -> SCNGeometry {
         let unit = SCNBox(width: 12, height: 12, length: 12, chamferRadius: 1.0)
         
         unit.firstMaterial!.transparency = 0.4
+        if (night) {
+            unit.firstMaterial!.diffuse.contents = UIColor.whiteColor()
+            unit.firstMaterial!.specular.contents = UIColor.grayColor()
+        }
         return unit
     }
     
@@ -72,7 +76,7 @@ class Unit {
         parent?.addChildNode(node)
         return node
     }
-
+    
     class func getPositionIndiceFromID(id: Int, origin: Int, max: Int) -> (Float, Float) {
         let a : Float = origin / (max / 2) == 0 ? Float(origin) : Float(max - 1) - Float(origin)
         let b : Float = id / (max / 2) == 0 ? Float(id) : Float(max - 1) - Float(id)
@@ -95,7 +99,7 @@ class Unit {
             SCNAction.moveTo(getPositionOnCase(p), duration: 1)
             ]))
     }
-
+    
     class func clearNode(unit: SCNNode, time: Double = 0.0) {
         let action = SCNAction.sequence([
             SCNAction.waitForDuration(time),

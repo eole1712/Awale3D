@@ -16,10 +16,13 @@ class Helper {
         
     var clicked : Bool
     
+    var night : Bool
+    
     let ally = Menu.createMenuText("Your boxes", size: 4)
     let enemy = Menu.createMenuText("Enemy boxes", size: 4)
     
-    init() {
+    init(night: Bool) {
+        self.night = night
         ally.position = SCNVector3(-25, -27, 0)
         enemy.position = SCNVector3(-15, -11, 0)
         ally.opacity = 0
@@ -38,7 +41,7 @@ class Helper {
             let id : Float = (i / 3 == 1) ? -1 : 1
             let start : Float = (i / 3 == 1) ? -25 : 5
             
-            let unit = Unit.newNodeWithUnit(Unit.newCase(), pos: SCNVector3(start - Float(i % 3) * 15 * id, -25 + Float(i / 3) * 15, 0), parent: nil)
+            let unit = Unit.newNodeWithUnit(Unit.newCase(night), pos: SCNVector3(start - Float(i % 3) * 15 * id, -25 + Float(i / 3) * 15, 0), parent: nil)
             map.append(unit)
             node.addChildNode(unit)
         }
@@ -114,14 +117,14 @@ class Helper {
         case 1:
             createMap()
             for j in 0..<3 {
-                Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: map[0])
+                Unit.newNodeWithUnit(Unit.newUnit(night), pos: Unit.getPositionOnCase(j), parent: map[0])
             }
         case 3:
             let pos = [0, 3, 0, 4, 1, 2]
             
             for i in 0..<6 {
                 for j in 0..<pos[i] {
-                    Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: map[i])
+                    Unit.newNodeWithUnit(Unit.newUnit(night), pos: Unit.getPositionOnCase(j), parent: map[i])
                 }
             }
         case 4:
@@ -129,7 +132,7 @@ class Helper {
             
             for i in 0..<6 {
                 for j in 0..<pos[i] {
-                    Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: map[i])
+                    Unit.newNodeWithUnit(Unit.newUnit(night), pos: Unit.getPositionOnCase(j), parent: map[i])
                 }
             }
         case 5:
@@ -139,7 +142,7 @@ class Helper {
 
             for i in 0..<6 {
                 for j in 0..<pos[i] {
-                    Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: map[i])
+                    Unit.newNodeWithUnit(Unit.newUnit(night), pos: Unit.getPositionOnCase(j), parent: map[i])
                 }
             }
         case 6:

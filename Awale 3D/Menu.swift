@@ -10,11 +10,12 @@ import SceneKit
 import UIKit
 
 class Menu {
+    
     class func createMenuButton(name: String, w: CGFloat = 40, h: CGFloat = 8) -> (boxNode: SCNNode, textNode: SCNNode) {
         let text = SCNText()
         text.string = name
         text.font = UIFont(name: (text.font?.fontName)!, size: 5)
-        text.firstMaterial?.diffuse.contents = UIColor(colorLiteralRed: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+        text.firstMaterial?.diffuse.contents = UIColor(colorLiteralRed: 0.8, green: 0.8, blue: 0.8, alpha: 1)
         
         let box = SCNBox(width: w, height: h, length: 10, chamferRadius: 1.0)
         box.firstMaterial!.transparency = 0.4
@@ -41,12 +42,12 @@ class Menu {
         let text = SCNText()
         text.string = name
         text.font = UIFont(name: (text.font?.fontName)!, size: size)
-        text.firstMaterial?.diffuse.contents = UIColor(colorLiteralRed: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+        text.firstMaterial?.diffuse.contents = UIColor(colorLiteralRed: 0.8, green: 0.8, blue: 0.8, alpha: 1)
         
         return SCNNode(geometry: text)
     }
     
-    class func mainMenu() -> SCNScene {
+    class func mainMenu(night: Bool) -> SCNScene {
         let scene = SCNScene()
         
         let node = Menu.createMenuText("Awale 3D", size: 16)
@@ -63,13 +64,13 @@ class Menu {
         
         node.position = SCNVector3Make(-42, -17, 0)
         
-        var unit = Unit.newNodeWithUnit(Unit.newUnit(), pos: SCNVector3(w * 0.6, 0, 0), parent: nil)
+        var unit = Unit.newNodeWithUnit(Unit.newUnit(night), pos: SCNVector3(w * 0.6, 0, 0), parent: nil)
         var action = SCNAction.rotateByAngle(360 * CGFloat(M_PI / 180.0), aroundAxis: SCNVector3(0.4, 1, 0), duration: 5)
         
         box.addChildNode(unit)
         box.runAction(SCNAction.repeatActionForever(action))
         
-        unit = Unit.newNodeWithUnit(Unit.newUnit(), pos: SCNVector3(w * -0.6, 0, 0), parent: nil)
+        unit = Unit.newNodeWithUnit(Unit.newUnit(night), pos: SCNVector3(w * -0.6, 0, 0), parent: nil)
         action = SCNAction.rotateByAngle(360 * CGFloat(M_PI / 180.0), aroundAxis: SCNVector3(0.4, 1, 0), duration: 5)
         
         box.addChildNode(unit)
@@ -126,8 +127,8 @@ class Menu {
         return scene
     }
     
-    class func gameScene(inout map: Map, inout player: [AI?], mode: Int) -> SCNScene {
-        map = Map.init()
+    class func gameScene(inout map: Map, inout player: [AI?], mode: Int, night: Bool) -> SCNScene {
+        map = Map.init(night: night)
         
         if (mode == 2) {
             player[0] = AI.init(map: map, turn: 0)

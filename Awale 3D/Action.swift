@@ -24,11 +24,18 @@ class Action {
         return pressRecognizer
     }
     
-    class func addCamera(scene: SCNScene) {
+    class func addCamera(scene: SCNScene, night: Bool) {
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
         cameraNode.position = SCNVector3Make(-8, -23, 55)
         scene.rootNode.addChildNode(cameraNode)
+        
+        if (night) {
+            let ambientLight = SCNLight()
+            ambientLight.type = SCNLightTypeAmbient
+            ambientLight.color = UIColor(red: 0.4, green: 0.4, blue: 0.4, alpha: 1.0)
+            cameraNode.light = ambientLight
+        }
     }
     
     class func addLight(scene: SCNScene) {

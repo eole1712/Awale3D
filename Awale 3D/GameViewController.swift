@@ -18,21 +18,24 @@ func CGRand() -> CGFloat {
 
 class GameViewController: UIViewController {
     
-    var map = Map.init()
-    var helper = Helper.init()
+    var map : Map = Map.init(night: true)
+    var helper : Helper = Helper.init(night: true)
     
     var player : [AI?] = [nil, nil]
     
     let inGame = false
     
+    let night = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         let scnView = self.view as! SCNView
         
-        execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
+        execScene(Menu.mainMenu(night), tapActionFuncName: "menuSceneTapped:")
         
-        //scnView.autoenablesDefaultLighting = true
-        scnView.backgroundColor = UIColor.whiteColor()
+        scnView.autoenablesDefaultLighting = false
+        scnView.backgroundColor = (night ? UIColor.blackColor() : UIColor.whiteColor())
     }
     
     func doAIAction() {
@@ -138,18 +141,18 @@ class GameViewController: UIViewController {
             case "New Game", "Replay":
                 execScene(Menu.newGameScene(), tapActionFuncName: "menuSceneTapped:")
             case "Head Menu", "Return":
-                execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
+                execScene(Menu.mainMenu(night), tapActionFuncName: "menuSceneTapped:")
             case "How to play":
-                helper = Helper.init()
+                helper = Helper.init(night: night)
                 execScene(Menu.sceneHowToPlay0(helper), tapActionFuncName: "helperSceneTapped:")
             case "About":
                 execScene(Menu.aboutMenu(), tapActionFuncName: "aboutSceneTapped:")
             case "Player vs AI":
-                execScene(Menu.gameScene(&map, player: &player, mode: 1), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
+                execScene(Menu.gameScene(&map, player: &player, mode: 1, night: night), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
             case "Two players":
-                execScene(Menu.gameScene(&map, player: &player, mode: 0), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
+                execScene(Menu.gameScene(&map, player: &player, mode: 0, night: night), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
             case "Two AI":
-                execScene(Menu.gameScene(&map, player: &player, mode: 2), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
+                execScene(Menu.gameScene(&map, player: &player, mode: 2, night: night), tapActionFuncName: "gameSceneTapped:", pressActionFuncName: "gameScenePressed:")
                 scnView.scene?.rootNode.runAction(SCNAction.waitForDuration(1), completionHandler: doAIAction)
             default: break
             }
@@ -157,7 +160,7 @@ class GameViewController: UIViewController {
     }
     
     func aboutSceneTapped(recognizer: UITapGestureRecognizer) {
-        execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
+        execScene(Menu.mainMenu(night), tapActionFuncName: "menuSceneTapped:")
     }
     
     
@@ -221,7 +224,7 @@ class GameViewController: UIViewController {
                 }
             case 6:
                 if (node.name == "Next") {
-                    execScene(Menu.mainMenu(), tapActionFuncName: "menuSceneTapped:")
+                    execScene(Menu.mainMenu(night), tapActionFuncName: "menuSceneTapped:")
                 }
             default: break
             }
@@ -253,7 +256,7 @@ class GameViewController: UIViewController {
     func execScene(scene: SCNScene, tapActionFuncName: Selector, pressActionFuncName: Selector = nil) {
         let scnView = self.view as! SCNView
         
-        Action.addCamera(scene)
+        Action.addCamera(scene, night: night)
         Action.addLight(scene)
         scnView.scene = scene
         

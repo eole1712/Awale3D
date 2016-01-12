@@ -26,7 +26,10 @@ class Map {
     var turn = 0
     var endGame = false
     
-    init() {
+    var night : Bool
+    
+    init(night: Bool) {
+        self.night = night
         _startMapX = _boxSize * 3.0
         _startMapY = _boxSize * 2.0
         
@@ -44,9 +47,9 @@ class Map {
             
             let position = SCNVector3Make(start - (_boxSize * id * Float(i % 6)), (Float(i / 6) * _boxSize) - _startMapY, 0)
             
-            let unit = Unit.newNodeWithUnit(Unit.newCase(), pos: position, parent: map)
+            let unit = Unit.newNodeWithUnit(Unit.newCase(night), pos: position, parent: map)
             for j in 0..<4 {
-                Unit.newNodeWithUnit(Unit.newUnit(), pos: Unit.getPositionOnCase(j), parent: unit)
+                Unit.newNodeWithUnit(Unit.newUnit(night), pos: Unit.getPositionOnCase(j), parent: unit)
             }
             
             _map.append((4, unit))
