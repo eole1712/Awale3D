@@ -226,7 +226,7 @@ class Map {
             value--
             tab[i]++
             if (value > 0) {
-                i = i + 1 % 12
+                i = (i + 1) % 12
             }
         }
         

@@ -72,7 +72,7 @@ class AI {
 
         if let tab = getPlayableCases() {
             let randAct : Int = Int(arc4random_uniform(UInt32(tab.count)))
-            return randAct
+            return tab[randAct]
         }
         
         let randAct : Int = (turn * 6) + Int(arc4random_uniform(6))
