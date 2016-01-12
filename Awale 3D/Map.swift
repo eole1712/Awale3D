@@ -13,11 +13,13 @@ class Map {
     
     var             map : SCNNode
     
-    var             _map = [(Int, SCNNode)]()
+    var             _map = [(Int, SCNNode, block: Bool)]()
     
     private let     _boxSize : Float = 15.0
     private let     _startMapX : Float
     private let     _startMapY : Float
+    
+    var wasNoMove = false
     
     let player1 = SCNText()
     let player2 = SCNText()
@@ -52,8 +54,9 @@ class Map {
                 Unit.newNodeWithUnit(Unit.newUnit(night), pos: Unit.getPositionOnCase(j), parent: unit)
             }
             
-            _map.append((4, unit))
+            _map.append((4, unit, false))
         }
+        print(_map)
         changeTurn(false)
     }
     
@@ -71,7 +74,34 @@ class Map {
         return ((nb > 0) ? false : true)
     }
     
+    func hasNoMove(turn: Int) -> Bool {
+        for i in (turn == 0 ? 0..<6 : 6..<12) {
+            if (_map[i].0 > 0) {
+                return false
+            }
+        }
+        return true
+    }
+    
+    func getTurn(id: Int) -> Int {
+        if (id < 6) {
+            return 0
+        }
+        return 1
+    }
+    
     func changeTurn(needChange: Bool) {
+//        if (wasNoMove) {
+//            for i in (turn == 0 ? 0..<6 : 6..<12) {
+//                if (_map[i].block == false) {
+//                    _map[i].1.geometry?.firstMaterial!.selfIllumination.contents = nil
+//                } else {
+//                    _map[i].1.geometry?.firstMaterial!.transparency += 0.4
+//                    _map[i].block = false
+//                }
+//            }
+//            wasNoMove = false
+//        }
         if (needChange) {
             turn = (turn == 0 ? 1 : 0)
         }
@@ -84,6 +114,18 @@ class Map {
                 _map[i].1.runAction(SCNAction.rotateByAngle(0.4, aroundAxis: SCNVector3((turn == 0 ? 1 : -1), 0, 0), duration: 0.5))
             }
         }
+        
+//        if (hasNoMove(turn == 0 ? 1 : 0)) {
+//            for i in (turn == 0 ? 0..<6 : 6..<12) {
+//                if (getTurn(i + _map[i].0) != turn) {
+//                    _map[i].1.geometry?.firstMaterial!.selfIllumination.contents = UIColor.yellowColor()
+//                } else {
+//                    _map[i].block = true
+//                    _map[i].1.geometry?.firstMaterial!.transparency -= 0.4
+//                }
+//            }
+//            wasNoMove = true
+//        }
     }
     
     func refreshScore() {
@@ -128,7 +170,7 @@ class Map {
         if (id == c) {
             return true
         } else if ((turn == 0 && id < 6) || (turn == 1 && id >= 6)) {
-          return false
+            return false
         } else if (id > c) {
             for (var i = id; i > c; i--) {
                 if (canBeEatenFrom(i, from: from) == false) {
@@ -172,7 +214,7 @@ class Map {
                 i = (i + 1) % 12;
             }
         }
-
+        
         time += 1.0
         
         while (((turn == 0 && i >= 6) || (turn == 1 && i < 6 && i >= 0)) && (_map[i].0 == 2 || _map[i].0 == 3)) {
