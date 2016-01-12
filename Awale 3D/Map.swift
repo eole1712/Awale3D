@@ -26,6 +26,8 @@ class Map {
     var turn = 0
     var endGame = false
     
+    var _lastValue = 0
+    
     init() {
         _startMapX = _boxSize * 3.0
         _startMapY = _boxSize * 2.0
@@ -195,7 +197,7 @@ class Map {
             if (i == c) {
                 i = (i + 1) % 12;
             }
-            value--;
+            value--
             if (value > 0) {
                 i = (i + 1) % 12;
             }
@@ -207,6 +209,49 @@ class Map {
             }
             i--;
         }
+    }
+    
+    func actOnSimulateTab(inout tab: [Int], c: Int) -> Int {
+        var score = 0
+        
+        var value = tab[c]
+        tab[c] = 0
+        
+        var i = (c + 1) % 12
+        while (value > 0) {
+            if (i == c) {
+                i = (i + 1) % 12
+            }
+            value--
+            tab[i]++
+            if (value > 0) {
+                i = i + 1 % 12
+            }
+        }
+        
+        while (((turn == 0 && i >= 6) || (turn == 1 && i < 6 && i >= 0)) && (tab[i] == 2 || tab[i] == 3)) {
+            score += tab[i]
+            tab[i] == 0
+            i--;
+        }
+        return score
+    }
+    
+    func simulateMove(c: Int) -> Int {
+        var tab = [Int]()
+        var score = 0
+        
+        for i in 0..<12 {
+            tab.append(_map[i].0)
+        }
+        
+        actOnSimulateTab(&tab, c: c)
+        
+        for i in (turn == 0 ? 6..<12 : 0..<6) {
+            score += actOnSimulateTab(&tab, c: i)
+        }
+        
+        return score
     }
     
     func findNodeAction(parent: SCNNode, child: SCNNode) -> Int?
