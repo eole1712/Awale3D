@@ -24,7 +24,7 @@ class AI {
         for i in (turn == 1 ? 6..<12 : 0..<6) {
             let a = map.howMuchCanEat(i)
             
-            if (a > score) {
+            if (a > score && !map._map[i].2) {
                 (id, score) = (i, a)
             }
         }
@@ -37,7 +37,7 @@ class AI {
     private func soloSphereCheck() -> Int? {
         for (var i = (turn == 1 ? 11 : 5); i >= (turn == 1 ? 6 : 0); i--) {
             if (map.canBeEaten(i) == true) {
-                if (i == (turn == 0 ? 5 : 11) || map._map[i + 1].0 > 1) {
+                if (i == (turn == 0 ? 5 : 11) || map._map[i + 1].0 > 1) && !map._map[i].2 {
                     return i
                 }
             }
@@ -49,7 +49,7 @@ class AI {
         var tab = [Int]()
         
         for i in (turn == 1 ? 6..<12 : 0..<6) {
-            if (map.simulateMove(i) == 0) {
+            if (map.simulateMove(i) == 0) && !map._map[i].2 {
                 tab.append(i)
             }
         }
@@ -76,7 +76,7 @@ class AI {
         }
         
         let randAct : Int = (turn * 6) + Int(arc4random_uniform(6))
-        if (map._map[randAct].0 > 0) {
+        if (map._map[randAct].0 > 0) && !map._map[randAct].2 {
             return randAct
         }
           

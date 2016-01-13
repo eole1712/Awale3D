@@ -13,7 +13,7 @@ class Map {
     
     var             map : SCNNode
     
-    var             _map = [(Int, SCNNode, block: Bool)]()
+    var             _map = [(Int, SCNNode, Bool)]()
     
     private let     _boxSize : Float = 15.0
     private let     _startMapX : Float
@@ -50,13 +50,14 @@ class Map {
             let position = SCNVector3Make(start - (_boxSize * id * Float(i % 6)), (Float(i / 6) * _boxSize) - _startMapY, 0)
             
             let unit = Unit.newNodeWithUnit(Unit.newCase(night), pos: position, parent: map)
+            if (i < 6 || i == 11) {
             for j in 0..<4 {
                 Unit.newNodeWithUnit(Unit.newUnit(night), pos: Unit.getPositionOnCase(j), parent: unit)
             }
+            }
             
-            _map.append((4, unit, false))
+            _map.append((i < 6 || i == 11 ? 4 : 0, unit, false))
         }
-        print(_map)
         changeTurn(false)
     }
     
@@ -91,17 +92,6 @@ class Map {
     }
     
     func changeTurn(needChange: Bool) {
-//        if (wasNoMove) {
-//            for i in (turn == 0 ? 0..<6 : 6..<12) {
-//                if (_map[i].block == false) {
-//                    _map[i].1.geometry?.firstMaterial!.selfIllumination.contents = nil
-//                } else {
-//                    _map[i].1.geometry?.firstMaterial!.transparency += 0.4
-//                    _map[i].block = false
-//                }
-//            }
-//            wasNoMove = false
-//        }
         if (needChange) {
             turn = (turn == 0 ? 1 : 0)
         }
@@ -115,17 +105,18 @@ class Map {
             }
         }
         
-//        if (hasNoMove(turn == 0 ? 1 : 0)) {
-//            for i in (turn == 0 ? 0..<6 : 6..<12) {
-//                if (getTurn(i + _map[i].0) != turn) {
-//                    _map[i].1.geometry?.firstMaterial!.selfIllumination.contents = UIColor.yellowColor()
-//                } else {
-//                    _map[i].block = true
-//                    _map[i].1.geometry?.firstMaterial!.transparency -= 0.4
-//                }
-//            }
-//            wasNoMove = true
-//        }
+        if (hasNoMove(turn == 0 ? 1 : 0)) {
+            for i in (turn == 0 ? 0..<6 : 6..<12) {
+                if (getTurn(i + _map[i].0) == turn){
+                    _map[i].2 = true
+                    _map[i].1.geometry?.firstMaterial!.transparency = 0.2
+                    for node in _map[i].1.childNodes {
+                        node.geometry?.firstMaterial!.transparency = 0.8
+                    }
+                }
+            }
+            wasNoMove = true
+        }
     }
     
     func refreshScore() {
@@ -195,11 +186,26 @@ class Map {
         return false
     }
     
+    func refresh() {
+        if (wasNoMove) {
+            for i in (turn == 0 ? 0..<6 : 6..<12) {
+                if (_map[i].2 == true) {
+                    _map[i].1.geometry?.firstMaterial!.transparency = 0.4
+                    for node in _map[i].1.childNodes {
+                        node.geometry?.firstMaterial!.transparency = 1
+                    }
+                    _map[i].2 = false
+                }
+            }
+            wasNoMove = false
+        }
+    }
     
     func doAction(c: Int, var time: Double = 0.0) -> Double {
-        
         var value = _map[c].0;
         _map[c].0 = 0;
+        
+        refresh()
         
         var i = (c + 1) % 12;
         
