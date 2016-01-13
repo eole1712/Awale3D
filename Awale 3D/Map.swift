@@ -104,10 +104,11 @@ class Map {
                 _map[i].1.runAction(SCNAction.rotateByAngle(0.4, aroundAxis: SCNVector3((turn == 0 ? 1 : -1), 0, 0), duration: 0.5))
             }
         }
-        
+        var total = 0
         if (hasNoMove(turn == 0 ? 1 : 0)) {
             for i in (turn == 0 ? 0..<6 : 6..<12) {
                 if (getTurn(i + _map[i].0) == turn){
+                    total++
                     _map[i].2 = true
                     _map[i].1.geometry?.firstMaterial!.transparency = 0.2
                     for node in _map[i].1.childNodes {
@@ -116,6 +117,9 @@ class Map {
                 }
             }
             wasNoMove = true
+            if (total == 6) {
+                refresh()
+            }
         }
     }
     

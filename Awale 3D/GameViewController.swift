@@ -80,7 +80,7 @@ class GameViewController: UIViewController {
                     Unit.emptyNode(node)
                     return
                 }
-                if ((player[0] == nil && map.turn == 0 && id < 6) || (player[1] == nil && map.turn == 1 && id > 5)) {
+                if ((player[0] == nil && map.turn == 0 && id < 6) || (player[1] == nil && map.turn == 1 && id > 5)) && (!map._map[id].2) {
                     let time = map.doAction(id)
                     
                     //AI TIME
